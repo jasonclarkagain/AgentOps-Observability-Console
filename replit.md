@@ -1,6 +1,6 @@
-# [Project name]
+# AgentOps
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+AgentOps is an observability console for autonomous systems that traces semantic agent behavior, attributes cost to outcomes, detects anomalies, and supports replay.
 
 ## Run & Operate
 
@@ -22,15 +22,24 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/agentops/` — React/Vite console with workspace, run explorer, run detail, anomalies, and MCP settings views.
+- `artifacts/api-server/` — Express API serving dashboard summaries, runs, semantic trace events, anomalies, replay, and telemetry ingestion.
+- `lib/api-spec/openapi.yaml` — source-of-truth API contract; regenerate clients with the codegen command above.
+- `lib/db/src/schema/agentops.ts` — Drizzle schema for captured runs, trace events, and anomalies.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- AgentOps telemetry uses semantic event types (`reasoning`, `tool_call`, `tool_result`, `context`, `correction`, `output`) so the UI can distinguish agent behavior from generic logs.
+- The first build uses a small seeded trace dataset to make the console useful immediately; telemetry ingestion appends events to an existing run and updates its event count.
+- The console is contract-first: the OpenAPI document generates both the API validation schemas and React Query hooks used by the frontend.
+- Demo seeding is single-flight so concurrent first requests cannot race and insert duplicate seed data.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Workspace overview with active runs, success rate, inference cost, latency, recent executions, open anomalies, and a selected semantic trace.
+- Searchable and status-filtered run explorer with drill-down into each run's reasoning and tool sequence.
+- Anomaly queue highlighting unexpected loops and repeated tool calls.
+- Replay action for captured runs and MCP-style semantic telemetry ingestion from the settings screen.
 
 ## User preferences
 
